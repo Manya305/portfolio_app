@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }}{% endblock %}
+
+{% block content %}
+<section class="project-detail py-5">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('main.projects') }}">Projects</a></li>
+                <li class="breadcrumb-item active">{{ project.title }}</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-lg-8">
+                {% if project.image_url %}
+                    <img src="{{ project.image_url }}" class="img-fluid rounded mb-4" alt="{{ project.title }}">
+                {% endif %}
+                
+                <h1 class="mb-4">{{ project.title }}</h1>
+                
+                {% if project.technologies %}
+                    <div class="technologies mb-4">
+                        {% for tech in project.technologies.split(',') %}
+                            <span class="badge bg-secondary me-2">{{ tech.strip() }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <div class="project-description">
+                    {{ project.description|safe }}
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card project-info">
+                    <div class="card-body">
+                        <h2 class="h5 card-title">Project Information</h2>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <strong>Created:</strong><br>
+                                {{ project.created_date.strftime('%B %d, %Y') }}
+                            </li>
+                            {% if project.project_url %}
+                                <li class="mb-3">
+                                    <strong>Live Demo:</strong><br>
+                                    <a href="{{ project.project_url }}" target="_blank" class="text-break">
+                                        {{ project.project_url }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if project.github_url %}
+                                <li class="mb-3">
+                                    <strong>Source Code:</strong><br>
+                                    <a href="{{ project.github_url }}" target="_blank" class="text-break">
+                                        {{ project.github_url }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                        
+                        <div class="d-grid gap-2">
+                            {% if project.project_url %}
+                                <a href="{{ project.project_url }}" class="btn btn-primary" target="_blank">
+                                    <i class="fas fa-external-link-alt me-2"></i>View Live Demo
+                                </a>
+                            {% endif %}
+                            {% if project.github_url %}
+                                <a href="{{ project.github_url }}" class="btn btn-dark" target="_blank">
+                                    <i class="fab fa-github me-2"></i>View on GitHub
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .project-detail {
+        background-color: #f8f9fa;
+    }
+    
+    .project-info {
+        position: sticky;
+        top: 2rem;
+    }
+    
+    .project-description {
+        line-height: 1.8;
+    }
+    
+    .technologies .badge {
+        font-size: 0.9rem;
+        padding: 0.5em 1em;
+    }
+    
+    .breadcrumb {
+        background-color: transparent;
+    }
+    
+    .breadcrumb-item a {
+        text-decoration: none;
+        color: #007bff;
+    }
+    
+    .breadcrumb-item.active {
+        color: #6c757d;
+    }
+</style>
+{% endblock %} 

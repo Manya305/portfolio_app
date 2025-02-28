@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Me{% endblock %}
+
+{% block content %}
+<section class="contact-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h1 class="text-center mb-5">Get in Touch</h1>
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <form method="POST" action="{{ url_for('main.contact') }}">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name *</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject</label>
+                                <input type="text" class="form-control" id="subject" name="subject">
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message *</label>
+                                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Send Message</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="contact-info text-center">
+                    <i class="fas fa-envelope fa-2x mb-3 text-primary"></i>
+                    <h3 class="h5">Email</h3>
+                    <p>{{ about.email if about else 'Contact form above' }}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="contact-info text-center">
+                    <i class="fab fa-github fa-2x mb-3 text-primary"></i>
+                    <h3 class="h5">GitHub</h3>
+                    <p>
+                        {% if about and about.github %}
+                            <a href="{{ about.github }}" target="_blank" class="text-decoration-none">View Profile</a>
+                        {% else %}
+                            Not available
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="contact-info text-center">
+                    <i class="fab fa-linkedin fa-2x mb-3 text-primary"></i>
+                    <h3 class="h5">LinkedIn</h3>
+                    <p>
+                        {% if about and about.linkedin %}
+                            <a href="{{ about.linkedin }}" target="_blank" class="text-decoration-none">Connect with me</a>
+                        {% else %}
+                            Not available
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .contact-section {
+        background-color: #f8f9fa;
+    }
+    
+    .contact-info {
+        padding: 2rem;
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        height: 100%;
+    }
+    
+    .contact-info i {
+        color: #007bff;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+</style>
+{% endblock %} 

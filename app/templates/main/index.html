@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}{{ about.name if about else 'Portfolio' }} - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero bg-light py-5 text-center">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-4 mb-4 mb-md-0">
+                {% if about and about.profile_image %}
+                    <img src="{{ about.profile_image }}" alt="{{ about.name }}" class="img-fluid rounded-circle shadow" style="max-width: 250px;">
+                {% endif %}
+            </div>
+            <div class="col-md-8 text-md-start">
+                <h1 class="display-4">{{ about.name if about else 'Welcome' }}</h1>
+                <h2 class="h3 text-muted">{{ about.title if about else '' }}</h2>
+                <p class="lead mt-3">{{ about.bio if about else '' }}</p>
+                {% if about and about.resume_url %}
+                    <a href="{{ about.resume_url }}" class="btn btn-primary mt-3" target="_blank">
+                        <i class="fas fa-download me-2"></i>Download Resume
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section class="skills py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Skills</h2>
+        <div class="row g-4">
+            {% for category, category_skills in skills|groupby('category') %}
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="card-title h4">{{ category }}</h3>
+                            <div class="skills-list">
+                                {% for skill in category_skills %}
+                                    <div class="skill-item mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="skill-name">
+                                                {% if skill.icon %}
+                                                    <i class="{{ skill.icon }} me-2"></i>
+                                                {% endif %}
+                                                {{ skill.name }}
+                                            </span>
+                                            <span class="skill-level">{{ skill.proficiency }}%</span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar" role="progressbar" style="width: {{ skill.proficiency }}%"></div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Projects Section -->
+<section class="projects py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Featured Projects</h2>
+        <div class="row g-4">
+            {% for project in projects[:3] %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        {% if project.image_url %}
+                            <img src="{{ project.image_url }}" class="card-img-top" alt="{{ project.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h3 class="card-title h5">{{ project.title }}</h3>
+                            <p class="card-text">{{ project.description|truncate(100) }}</p>
+                            {% if project.technologies %}
+                                <div class="technologies mb-3">
+                                    {% for tech in project.technologies.split(',') %}
+                                        <span class="badge bg-secondary me-1">{{ tech.strip() }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <a href="{{ url_for('main.project_detail', id=project.id) }}" class="btn btn-outline-primary btn-sm">Learn More</a>
+                            {% if project.github_url %}
+                                <a href="{{ project.github_url }}" class="btn btn-outline-dark btn-sm" target="_blank">
+                                    <i class="fab fa-github"></i> GitHub
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('main.projects') }}" class="btn btn-primary">View All Projects</a>
+        </div>
+    </div>
+</section>
+
+<!-- Experience Section -->
+<section class="experience py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Experience</h2>
+        <div class="timeline">
+            {% for exp in experiences %}
+                <div class="timeline-item">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="timeline-date">
+                                {{ exp.start_date.strftime('%b %Y') }} - 
+                                {% if exp.is_current %}
+                                    Present
+                                {% else %}
+                                    {{ exp.end_date.strftime('%b %Y') }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="timeline-content">
+                                <h3 class="h5">{{ exp.title }}</h3>
+                                <h4 class="h6 text-muted">{{ exp.company }}</h4>
+                                <p class="mb-0">{{ exp.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Education Section -->
+<section class="education py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Education</h2>
+        <div class="row justify-content-center">
+            {% for edu in education %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="card-title h5">{{ edu.degree }}</h3>
+                            <h4 class="h6 text-muted">{{ edu.institution }}</h4>
+                            <p class="card-text">
+                                {{ edu.field }}<br>
+                                {{ edu.start_date.strftime('%b %Y') }} - 
+                                {% if edu.end_date %}
+                                    {{ edu.end_date.strftime('%b %Y') }}
+                                {% else %}
+                                    Present
+                                {% endif %}
+                            </p>
+                            {% if edu.description %}
+                                <p class="card-text">{{ edu.description }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Contact CTA -->
+<section class="contact-cta text-center py-5">
+    <div class="container">
+        <h2 class="mb-4">Let's Work Together</h2>
+        <p class="lead mb-4">Have a project in mind? I'd love to hear about it.</p>
+        <a href="{{ url_for('main.contact') }}" class="btn btn-lg btn-primary">Get in Touch</a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .timeline-item {
+        position: relative;
+        padding-bottom: 2rem;
+    }
+    
+    .timeline-item:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        left: 33.33%;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: #dee2e6;
+    }
+    
+    .timeline-date {
+        font-weight: bold;
+        color: #6c757d;
+        padding-right: 2rem;
+    }
+    
+    .timeline-content {
+        padding-bottom: 1.5rem;
+    }
+    
+    .skill-item .progress-bar {
+        background-color: #007bff;
+        transition: width 0.6s ease;
+    }
+    
+    .hero {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    
+    .card {
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %} 

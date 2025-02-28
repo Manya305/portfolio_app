@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+<section class="admin-messages py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Messages</h1>
+            <a href="{{ url_for('admin.index') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+        
+        <!-- Messages List -->
+        <div class="card">
+            <div class="card-body">
+                {% if messages %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>From</th>
+                                    <th>Subject</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for message in messages %}
+                                    <tr class="{{ 'table-light' if message.is_read else 'fw-bold' }}">
+                                        <td>
+                                            {% if message.is_read %}
+                                                <span class="badge bg-secondary">Read</span>
+                                            {% else %}
+                                                <span class="badge bg-primary">New</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ message.name }}<br>
+                                            <small class="text-muted">{{ message.email }}</small>
+                                        </td>
+                                        <td>
+                                            {% if message.subject %}
+                                                {{ message.subject }}
+                                            {% else %}
+                                                <span class="text-muted">(No subject)</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ message.created_date.strftime('%Y-%m-%d') }}<br>
+                                            <small class="text-muted">{{ message.created_date.strftime('%H:%M') }}</small>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="{{ url_for('admin.view_message', id=message.id) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ message.id }}">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </div>
+                                            
+                                            <!-- Delete Modal for each message -->
+                                            <div class="modal fade" id="deleteModal{{ message.id }}" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Delete Message</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Are you sure you want to delete this message? This action cannot be undone.</p>
+                                                            <div class="message-preview">
+                                                                <p><strong>From:</strong> {{ message.name }} ({{ message.email }})</p>
+                                                                <p><strong>Subject:</strong> {{ message.subject or '(No subject)' }}</p>
+                                                                <p><strong>Date:</strong> {{ message.created_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                            <form action="{{ url_for('admin.delete_message', id=message.id) }}" method="POST" class="d-inline">
+                                                                <button type="submit" class="btn btn-danger">Delete Message</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <h3 class="h4">No Messages</h3>
+                        <p class="text-muted">You haven't received any messages yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-messages {
+        background-color: #f8f9fa;
+        min-height: calc(100vh - 200px);
+    }
+    
+    .card {
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    .table th {
+        border-top: none;
+    }
+    
+    .message-preview {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 0.25rem;
+        margin-top: 1rem;
+    }
+    
+    .message-preview p:last-child {
+        margin-bottom: 0;
+    }
+    
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+    }
+</style>
+{% endblock %} 

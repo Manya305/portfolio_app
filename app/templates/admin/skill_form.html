@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}{% if skill %}Edit{% else %}Add{% endif %} Skill{% endblock %}
+
+{% block content %}
+<section class="admin-skill py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>{% if skill %}Edit{% else %}Add New{% endif %} Skill</h1>
+                    <a href="{{ url_for('admin.skills') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Skills
+                    </a>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('admin.edit_skill', id=skill.id) if skill else url_for('admin.add_skill') }}">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Skill Name *</label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ skill.name if skill else '' }}" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Category *</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Select a category</option>
+                                    <option value="Technical" {% if skill and skill.category == 'Technical' %}selected{% endif %}>Technical</option>
+                                    <option value="Soft Skills" {% if skill and skill.category == 'Soft Skills' %}selected{% endif %}>Soft Skills</option>
+                                    <option value="Languages" {% if skill and skill.category == 'Languages' %}selected{% endif %}>Languages</option>
+                                    <option value="Tools" {% if skill and skill.category == 'Tools' %}selected{% endif %}>Tools</option>
+                                    <option value="Frameworks" {% if skill and skill.category == 'Frameworks' %}selected{% endif %}>Frameworks</option>
+                                    <option value="Other" {% if skill and skill.category == 'Other' %}selected{% endif %}>Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="proficiency" class="form-label">Proficiency Level *</label>
+                                <div class="d-flex align-items-center">
+                                    <input type="range" class="form-range flex-grow-1 me-2" id="proficiency" name="proficiency" min="0" max="100" step="5" value="{{ skill.proficiency if skill else '50' }}" required>
+                                    <span id="proficiencyValue" class="badge bg-primary" style="width: 3rem; text-align: center;">
+                                        {{ skill.proficiency if skill else '50' }}%
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="icon" class="form-label">Icon Class</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-icons"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="icon" name="icon" value="{{ skill.icon if skill else '' }}" placeholder="e.g., fab fa-python">
+                                </div>
+                                <div class="form-text">
+                                    Use Font Awesome classes. Visit <a href="https://fontawesome.com/icons" target="_blank">Font Awesome</a> to find icons.
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>
+                                    {% if skill %}Save Changes{% else %}Add Skill{% endif %}
+                                </button>
+                                
+                                {% if skill %}
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="fas fa-trash-alt me-2"></i>Delete Skill
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if skill %}
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Skill</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this skill? This action cannot be undone.</p>
+                <p class="mb-0"><strong>Skill:</strong> {{ skill.name }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('admin.delete_skill', id=skill.id) }}" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Delete Skill</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-skill {
+        background-color: #f8f9fa;
+        min-height: calc(100vh - 200px);
+    }
+    
+    .card {
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .form-range::-webkit-slider-thumb {
+        background: #007bff;
+    }
+    
+    .form-range::-moz-range-thumb {
+        background: #007bff;
+    }
+    
+    .form-range::-ms-thumb {
+        background: #007bff;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('proficiency').addEventListener('input', function(e) {
+        document.getElementById('proficiencyValue').textContent = e.target.value + '%';
+    });
+    
+    document.getElementById('icon').addEventListener('input', function(e) {
+        const iconPreview = document.querySelector('.input-group-text i');
+        iconPreview.className = e.target.value || 'fas fa-icons';
+    });
+</script>
+{% endblock %} 
