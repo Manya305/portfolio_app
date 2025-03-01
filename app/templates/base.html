@@ -84,12 +84,12 @@
                     <h5>Connect With Me</h5>
                     <div class="social-links">
                         {% if g.about and g.about.github %}
-                            <a href="{{ g.about.github }}" target="_blank" class="text-light me-3">
+                            <a href="{{ g.about.github }}" target="_blank" data-no-spinner>
                                 <i class="fab fa-github"></i>
                             </a>
                         {% endif %}
                         {% if g.about and g.about.linkedin %}
-                            <a href="{{ g.about.linkedin }}" target="_blank" class="text-light me-3">
+                            <a href="{{ g.about.linkedin }}" target="_blank" data-no-spinner>
                                 <i class="fab fa-linkedin"></i>
                             </a>
                         {% endif %}

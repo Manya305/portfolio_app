@@ -9,7 +9,7 @@
             <div class="col-md-8">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1>{% if skill %}Edit{% else %}Add New{% endif %} Skill</h1>
-                    <a href="{{ url_for('admin.skills') }}" class="btn btn-outline-primary">
+                    <a href="{{ url_for('admin.skills') }}" class="btn btn-outline-primary" data-no-spinner>
                         <i class="fas fa-arrow-left me-2"></i>Back to Skills
                     </a>
                 </div>
@@ -54,7 +54,7 @@
                                     <input type="text" class="form-control" id="icon" name="icon" value="{{ skill.icon if skill else '' }}" placeholder="e.g., fab fa-python">
                                 </div>
                                 <div class="form-text">
-                                    Use Font Awesome classes. Visit <a href="https://fontawesome.com/icons" target="_blank">Font Awesome</a> to find icons.
+                                    Use Font Awesome classes. Visit <a href="https://fontawesome.com/icons" target="_blank" data-no-spinner>Font Awesome</a> to find icons.
                                 </div>
                             </div>
                             
@@ -132,6 +132,30 @@
     .form-range::-ms-thumb {
         background: #007bff;
     }
+
+    /* Loading state styles */
+    .btn[type="submit"].loading {
+        position: relative;
+        color: transparent !important;
+    }
+
+    .btn[type="submit"].loading::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 1rem;
+        height: 1rem;
+        margin: -0.5rem 0 0 -0.5rem;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
 </style>
 {% endblock %}
 
@@ -144,6 +168,15 @@
     document.getElementById('icon').addEventListener('input', function(e) {
         const iconPreview = document.querySelector('.input-group-text i');
         iconPreview.className = e.target.value || 'fas fa-icons';
+    });
+
+    // Form submission handling with loading state
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+        }
     });
 </script>
 {% endblock %} 

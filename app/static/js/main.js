@@ -202,4 +202,20 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('popstate', () => {
         showSpinner();
     });
+
+    showSpinner('Custom loading message');
+    // ... do something ...
+    hideSpinner();
+
+    document.addEventListener('submit', (e) => {
+        const form = e.target;
+        if (!form.hasAttribute('data-no-spinner')) {
+            const submitBtn = form.querySelector('[type="submit"]');
+            if (submitBtn) {
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+            }
+            showSpinner('Submitting...');
+        }
+    });
 }); 
