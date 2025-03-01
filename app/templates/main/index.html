@@ -48,8 +48,8 @@
                                             </span>
                                             <span class="skill-level">{{ skill.proficiency }}%</span>
                                         </div>
-                                        <div class="progress" style="height: 8px;">
-                                            <div class="progress-bar" role="progressbar" style="width: {{ skill.proficiency }}%"></div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" data-width="{{ skill.proficiency }}" style="width: 0%"></div>
                                         </div>
                                     </div>
                                 {% endfor %}
@@ -206,6 +206,10 @@
         background-color: #007bff;
         transition: width 0.6s ease;
     }
+
+    .progress {
+        height: 8px;
+    }
     
     .hero {
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -219,4 +223,16 @@
         transform: translateY(-5px);
     }
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animate progress bars
+    document.querySelectorAll('.progress-bar').forEach(bar => {
+        const width = bar.getAttribute('data-width');
+        setTimeout(() => {
+            bar.style.width = width + '%';
+        }, 100);
+    });
+</script>
 {% endblock %} 
